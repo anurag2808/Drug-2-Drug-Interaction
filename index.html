@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Interaction Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f4;
+            background-image: url("Bg-1.jpg");
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .center {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .table-container {
+            width: 80%;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div style="min-height: 25vh; width: 100vw;padding: auto;  border-radius: 10px; display: flex; justify-content: center; align-items: center;">
+        <h1 style="text-align: center; text-shadow: black;font-size: 10vh; " >Drug Interaction Predictor</h1>
+    </div>
+    <div style="position: static;" class="container">
+        <input class="center" type="text" id="id1" placeholder="Enter First DrugBank ID">
+        <input class="center" type="text" id="id2" placeholder="Enter Second DrugBank ID">
+        <button onclick="predict()">Predict</button>
+        <p id="result"></p>
+    </div>
+    <div class="container">
+        <h3>Output and the relation of drugs with each other</h3>
+        <iframe src="./Details.html" style="width: 50vw; height: 75vh; border: none;" title="Drug Interaction Details">
+        </iframe>
+      </div>
+    <script>
+        async function predict() {
+            const id1 = document.getElementById("id1").value.trim();
+            const id2 = document.getElementById("id2").value.trim();
+            const resultElement = document.getElementById("result");
+
+            resultElement.innerHTML = "Processing...";
+
+            const response = await fetch("http://localhost:7777/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id1, id2 })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                resultElement.innerHTML = `Prediction: ${data.prediction}`;
+            } else {
+                resultElement.innerHTML = `Error: ${data.error}`;
+            }
+        }
+    </script>
+</body>
+</html>
